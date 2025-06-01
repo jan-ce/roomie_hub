@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Send SMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<h2>Send SMS via Amazon SNS</h2>
+
+<form method="post" th:action="@{/sms/send}">
+    <label>Phone Number:</label>
+    <input type="text" name="phoneNumber" placeholder="+11234567890" required><br>
+    <label>Message:</label>
+    <textarea name="message" required></textarea><br>
+    <button type="submit">Send</button>
+</form>
+
+<div th:if="${success}" style="color:green;">
+    <p th:text="${success}"></p>
+</div>
+<div th:if="${error}" style="color:red;">
+    <p th:text="${error}"></p>
+</div>
+</body>
+</html>

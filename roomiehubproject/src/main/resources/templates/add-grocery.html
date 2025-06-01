@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Grocery</title>
+</head>
+<body>
+    <h2>Add Grocery Page</h2>
+    <form th:action="@{/groceries/save}" th:object="${grocery}" method="post">
+        <input type="text" th:field="*{name}" placeholder="Name" required />
+        <input type="number" th:field="*{quantity}" placeholder="Quantity" required />
+        <input type="text" th:field="*{category}" placeholder="Category" required />
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

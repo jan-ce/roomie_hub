@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Groceries Galore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Fonts -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #D4C8B3, #2F2F2F); /* Soft beige to deep gray gradient */
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            padding-top: 50px; /* To prevent the content from being hidden behind the header */
+        }
+
+        /* Sticky Header */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #2F2F2F; /* Deep Charcoal Gray */
+            padding: 0.75em;
+            z-index: 100;
+        }
+
+        .navbar-nav .nav-link {
+            color: #D4AF37; /* Elegant Gold */
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 1.5em;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #fff;
+            border-bottom: 2px solid #D4AF37; /* Gold underline on hover */
+        }
+
+        .glass-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 2em 2.5em;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 80px; /* Offset content below the fixed header */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            border: none;
+            padding: 0.75em;
+            margin-bottom: 1rem;
+            background-color: #f4f4f4; /* Light gray background */
+            color: #333;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-color: #D4AF37; /* Gold border on focus */
+        }
+
+        .btn-glow {
+            width: 100%;
+            background: #D4AF37; /* Elegant gold */
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            padding: 0.75em;
+            border-radius: 12px;
+            transition: all 0.3s ease-in-out;
+            text-transform: uppercase;
+        }
+
+        .btn-glow:hover {
+            background: #B38B29; /* Darker gold on hover */
+            box-shadow: 0 0 12px #D4AF37;
+        }
+
+        .table-container {
+            display: flex;
+            justify-content: center; /* Center the table */
+            margin-top: 2em;
+        }
+
+        .table {
+            width: 100%;
+            max-width: 900px; /* Restrict max width for better appearance */
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #D4AF37; /* Gold border */
+        }
+
+        .table thead th {
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-buttons button {
+            margin: 0 5px 5px 0;
+        }
+
+        .btn-edit {
+            background-color: #4A90E2; /* Slate blue */
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit:hover {
+            background-color: #357ABD; /* Darker blue on hover */
+            box-shadow: 0 0 8px #4A90E2;
+        }
+
+        .btn-delete {
+            background-color: #C94C4C; /* Crimson red */
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #A43C3C; /* Darker red on hover */
+            box-shadow: 0 0 8px #C94C4C;
+        }
+
+        .fun-message {
+            text-align: center;
+            margin-top: 2em;
+            font-weight: 500;
+            color: #f1f1f1;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header with Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">Roomie Hub</a>
+    <div class="navbar-nav ml-auto">
+       <a class="nav-link" href="/">Home</a>
+<a class="nav-link" href="/groceries">Groceries</a>
+<a class="nav-link" href="/dinner">Dinner</a>
+    </div>
+</nav>
+
+<div class="glass-container">
+    <h2>🌟 Groceries Galore</h2>
+
+    <form th:action="${grocery.id} != null ? @{/groceries/update} : @{/groceries/save}" 
+          th:object="${grocery}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <div class="form-group">
+            <label for="groceryName">Grocery Name</label>
+            <input type="text" id="groceryName" th:field="*{name}" class="form-control" placeholder="e.g., Bananas" required />
+        </div>
+        <div class="form-group">
+            <label for="groceryQuantity">Quantity</label>
+            <input type="number" id="groceryQuantity" th:field="*{quantity}" class="form-control" placeholder="e.g., 5" required />
+        </div>
+        <div class="form-group">
+            <label for="groceryCategory">Category</label>
+            <input type="text" id="groceryCategory" th:field="*{category}" class="form-control" placeholder="We have it or We want it" required />
+        </div>
+        <button type="submit" class="btn btn-glow mt-2" 
+                th:text="${grocery.id} != null ? 'Update Item ✏️' : 'Add Item ➕'">
+            Add Item
+        </button>
+    </form>
+
+    <h3 class="mt-5 text-center">🛍️ Your Cart</h3>
+
+    <div class="table-container">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="grocery : ${groceries}">
+                    <td th:text="${grocery.name}">Grocery Name</td>
+                    <td th:text="${grocery.quantity}">Quantity</td>
+                    <td th:text="${grocery.category}">Category</td>
+                    <td class="action-buttons">
+                        <a th:href="@{/groceries/edit/{id}(id=${grocery.id})}">
+                            <button class="btn btn-edit btn-sm">Edit</button>
+                        </a>
+                        <a th:href="@{/groceries/delete/{id}(id=${grocery.id})}">
+                            <button class="btn btn-delete btn-sm">Delete</button>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fun-message">
+        <p>Organized. Stylish. Delicious. 🍓</p>
+    </div>
+</div>
+
+</body>
+</html>
